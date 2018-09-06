@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taotao.mapper.TbContentCategoryMapper" >
+ <select id="gteTbContentCategoryByParentId" parameterType="long" resultType="com.taotao.pojo.TbContentCategory">
+ SELECT * FROM tbcontentcategory WHERE parentId=#{parentId}
+ </select>
+ <insert id="addTbContentcategory" parameterType="com.taotao.pojo.TbContentCategory">
+ <!-- 注意插入一条数据后要返回当前 的插入数据id 因为页面要通过id来显示-->
+ <selectKey keyProperty="id" resultType="long"  order="AFTER">
+SELECT LAST_INSERT_ID()
+ </selectKey>
+ INSERT INTO tbcontentcategory (parentId,name,status,sortOrder,isParent,created,updated) VALUE(#{parentId},#{name},#{status},#{sortOrder},#{isParent},#{created},#{updated})
+ </insert>
+ <select id="geTbContentCategoryById" parameterType="long" resultType="com.taotao.pojo.TbContentCategory">
+ SELECT * FROM tbcontentcategory WHERE id=#{id}
+ </select>
+ <update id="updateTbContentCategory" parameterType="com.taotao.pojo.TbContentCategory">
+ UPDATE tbcontentcategory SET isParent=#{isParent} WHERE id=#{id}
+ </update>
+</mapper>

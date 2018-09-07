@@ -26,7 +26,7 @@ public class SearchServiceImpl implements SearchService {
 	//开启高亮
 	query.setHighlight(true);
 	//设置哪个域高亮
-	query.addHighlightField("item_title");
+	query.addHighlightField("itemtitle");
 	//前缀
 	query.setHighlightSimplePre("<span style='lolor:red'>");
 	//后缀

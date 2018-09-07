@@ -22,7 +22,7 @@ public interface ItemService {
 /**
  * 添加商品基本信息和描述信息，商品的规格参数以后来参加
  * @param item 商品基本信息
- * @param itemDesc 商品描述信息
+ * @param
  * @return 包含了状态吗 是否成功的message 和json数据
  */
  TaotaoResult addItem(TbItem item, String desc);

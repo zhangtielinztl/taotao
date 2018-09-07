@@ -10,12 +10,13 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.taotao.common.pojo.SearchItem;
 import com.taotao.common.pojo.SearchResult;
-import com.taotao.common.pojo.TaotaoResult;
+
 
 @Repository
 public class SearchDao {
@@ -28,6 +29,8 @@ public class SearchDao {
 	 */
 	@Autowired
 	private SolrServer solrServer;
+	@Autowired
+	private  SearchItemMapper searchItemMapper;
 
 	public SearchResult search(SolrQuery query) {
 		
@@ -43,7 +46,7 @@ public class SearchDao {
 				item.setCategory_name((String) solrDocument.get("item_category_name"));
 				item.setImage((String) solrDocument.get("item_image"));
 				item.setPrice((long) solrDocument.get("item_price"));
-				item.setSell_point((String) solrDocument.get("item_sell_point"));
+				item.setSellPoint((String) solrDocument.get("item_sell_point"));
 				Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
 				List<String> list2= highlighting.get(solrDocument.get("id")).get("item_title");
 				String itemTitle = "";
@@ -72,4 +75,5 @@ public class SearchDao {
 		}
 		return null;
 	}
+
 }

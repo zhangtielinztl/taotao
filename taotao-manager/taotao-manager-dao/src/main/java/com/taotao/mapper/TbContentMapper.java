@@ -13,7 +13,7 @@ public interface TbContentMapper {
  List<TbContent> findTbContentAll(long categoryId);
  /**
   * 根据指定内容id删除指定内容
-  * @param category 内容分类id
+  *
   */
  void deletefindTbcontentById(Long id);
  /**

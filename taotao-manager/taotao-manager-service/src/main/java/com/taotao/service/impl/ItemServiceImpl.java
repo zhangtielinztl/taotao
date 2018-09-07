@@ -3,7 +3,12 @@ package com.taotao.service.impl;
 import java.util.Date;
 import java.util.List;
 
+
+import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -15,6 +20,14 @@ import com.taotao.mapper.TbItemMapper;
 import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemDesc;
 import com.taotao.service.ItemService;
+
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
+
 /**
  * @Service替代 <bean> 标签
  *
@@ -25,6 +38,13 @@ import com.taotao.service.ItemService;
 public class ItemServiceImpl implements ItemService {
 @Autowired
 private TbItemMapper tbItemMapper;
+@Autowired
+	private  JmsTemplate  jmsTemplate;
+
+@Autowired
+private ActiveMQTopic topicDestination;
+
+
 	@Override
 	public TbItem geTbItemById(long itemId) {
 		TbItem tbItem = tbItemMapper.geTbItemById(itemId);
@@ -48,7 +68,7 @@ private TbItemMapper tbItemMapper;
 	@Override
 	public TaotaoResult addItem(TbItem item, String desc) {
 		//补全商品信息
-		long itemId=IDUtils.genItemId();
+	final long itemId=IDUtils.genItemId();
 	item.setId(itemId);
 	//补全状态
 	item.setStatus((byte) 1);
@@ -68,7 +88,17 @@ private TbItemMapper tbItemMapper;
 	//补全商品描述表中更新时间
 	itemDesc.setUpdated(date);
 	tbItemMapper.addTbItemDesc(itemDesc);
-	
-		return TaotaoResult.ok();
+	//添加发送消息的业务逻辑
+
+jmsTemplate.send(topicDestination, new MessageCreator() {
+	@Override
+	public Message createMessage(Session session) throws JMSException {
+
+		TextMessage textMessage=session.createTextMessage(itemId + "");
+		return textMessage;
+	}
+});
+
+			return TaotaoResult.ok();
 	}
 }

@@ -13,5 +13,6 @@ public interface SearchItemMapper {
 	 * @return 返回SearchItem
 	 */
 	List<SearchItem> getItemList();
+	SearchItem getItemById(long itemId);
 	
 }

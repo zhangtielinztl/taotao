@@ -2,16 +2,19 @@ package com.taotao.search.controller;
 
 import java.io.UnsupportedEncodingException;
 
+import com.taotao.search.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import com.taotao.common.pojo.SearchResult;
-import com.taotao.search.service.SearchService;
+
+import javax.annotation.Resource;
+
 
 @Controller
 public class SearchController {
@@ -19,7 +22,7 @@ public class SearchController {
 	@Value("${ITEM_ROWS}")
 	private Integer ITEM_ROWS;
 	
-	@Autowired
+	@Resource
 	private SearchService searchService;
 	
 	@RequestMapping("/search")

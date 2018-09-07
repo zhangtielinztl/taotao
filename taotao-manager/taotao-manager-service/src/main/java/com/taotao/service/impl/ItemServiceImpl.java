@@ -4,10 +4,15 @@ import java.util.Date;
 import java.util.List;
 
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.taotao.commom.utils.JsonUtils;
+import com.taotao.jedis.JedisClient;
 import com.taotao.mapper.TbItemDescMapper;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
@@ -37,6 +42,16 @@ import javax.jms.TextMessage;
 
 @Service
 public class ItemServiceImpl implements ItemService {
+	@Value("${ITEM_INFO}")
+	private String ITEM_INFO;
+	@Value("${BASE}")
+	private  String BASE;
+	@Value("${DESC}")
+	private  String DESC;
+	@Value("${PARAM}")
+	private  String PARAM;
+	@Autowired
+	private JedisClient jedisClient;
 @Autowired
 private TbItemMapper tbItemMapper;
 @Autowired
@@ -49,7 +64,26 @@ private TbItemDescMapper tbItemDescMapper;
 
 	@Override
 	public TbItem geTbItemById(long itemId) {
+		//从缓存中取数据
+		try {
+			//查询缓存
+			String json = jedisClient.get(ITEM_INFO+ ":" + itemId + ":BASE");
+			if (StringUtils.isNotBlank(json)) {
+				//把json转换为java对象
+				TbItem item = JsonUtils.jsonToPojo(json, TbItem.class);
+				return item;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		TbItem tbItem = tbItemMapper.geTbItemById(itemId);
+		//把数据库中的数据加入缓存
+		try{
+			jedisClient.set(ITEM_INFO+":"+itemId+BASE, JsonUtils.objectToJson(tbItem));
+		}catch (Exception e){
+              e.printStackTrace();
+		}
+
 		return tbItem;
 	}
 	@Override
@@ -106,7 +140,24 @@ jmsTemplate.send(topicDestination, new MessageCreator() {
 
 	@Override
 	public TbItemDesc getItemDescById(long itemId) {
+		try {
+			String json = jedisClient.get(ITEM_INFO+ ":" + itemId + ":DESC");
+			//判断缓存是否命中
+			if (StringUtils.isNotBlank(json) ) {
+				//转换为java对象
+				TbItemDesc itemDesc = JsonUtils.jsonToPojo(json, TbItemDesc.class);
+				return itemDesc;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		TbItemDesc itemDesc = tbItemDescMapper.getItemDescById(itemId);
+		//把数据库中的数据加入缓存
+		try{
+			jedisClient.set(ITEM_INFO+":"+itemId+DESC, JsonUtils.objectToJson(itemDesc));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		return itemDesc;
 	}
 }

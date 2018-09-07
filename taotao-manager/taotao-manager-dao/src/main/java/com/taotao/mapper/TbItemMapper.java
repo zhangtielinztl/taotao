@@ -23,4 +23,5 @@ public interface TbItemMapper {
 	 * @param itemDesc 商品描述信息对象
 	 */
 	void addTbItemDesc(TbItemDesc itemDesc);
+
 }

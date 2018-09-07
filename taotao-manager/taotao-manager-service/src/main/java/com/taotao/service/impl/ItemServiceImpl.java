@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 
+import com.taotao.mapper.TbItemDescMapper;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,7 +44,8 @@ private TbItemMapper tbItemMapper;
 
 @Autowired
 private ActiveMQTopic topicDestination;
-
+@Autowired
+private TbItemDescMapper tbItemDescMapper;
 
 	@Override
 	public TbItem geTbItemById(long itemId) {
@@ -100,5 +102,11 @@ jmsTemplate.send(topicDestination, new MessageCreator() {
 });
 
 			return TaotaoResult.ok();
+	}
+
+	@Override
+	public TbItemDesc getItemDescById(long itemId) {
+		TbItemDesc itemDesc = tbItemDescMapper.getItemDescById(itemId);
+		return itemDesc;
 	}
 }

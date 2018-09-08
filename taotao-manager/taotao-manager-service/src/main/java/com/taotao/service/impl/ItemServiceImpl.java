@@ -50,6 +50,8 @@ public class ItemServiceImpl implements ItemService {
 	private  String DESC;
 	@Value("${PARAM}")
 	private  String PARAM;
+	@Value("${Expiry_ITME}")
+	private  int Expiry_ITME;
 	@Autowired
 	private JedisClient jedisClient;
 @Autowired
@@ -80,6 +82,7 @@ private TbItemDescMapper tbItemDescMapper;
 		//把数据库中的数据加入缓存
 		try{
 			jedisClient.set(ITEM_INFO+":"+itemId+BASE, JsonUtils.objectToJson(tbItem));
+			jedisClient.expire(ITEM_INFO+":"+itemId+BASE,Expiry_ITME);
 		}catch (Exception e){
               e.printStackTrace();
 		}
@@ -146,7 +149,8 @@ jmsTemplate.send(topicDestination, new MessageCreator() {
 			if (StringUtils.isNotBlank(json) ) {
 				//转换为java对象
 				TbItemDesc itemDesc = JsonUtils.jsonToPojo(json, TbItemDesc.class);
-				return itemDesc;
+
+					return itemDesc;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,6 +159,7 @@ jmsTemplate.send(topicDestination, new MessageCreator() {
 		//把数据库中的数据加入缓存
 		try{
 			jedisClient.set(ITEM_INFO+":"+itemId+DESC, JsonUtils.objectToJson(itemDesc));
+		jedisClient.expire(ITEM_INFO+":"+itemId+DESC,Expiry_ITME);
 		}catch (Exception e){
 			e.printStackTrace();
 		}

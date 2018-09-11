@@ -107,27 +107,27 @@ private TbItemDescMapper tbItemDescMapper;
 	@Override
 	public TaotaoResult addItem(TbItem item, String desc) {
 		//补全商品信息
-	final long itemId=IDUtils.genItemId();
-	item.setId(itemId);
-	//补全状态
-	item.setStatus((byte) 1);
-	Date date = new Date();
-	//补全创建时间
-	item.setCreated(date);
-	//补全更新时间
-	item.setUpdated(date);
-	//添加商品基本信息
-	tbItemMapper.addTbItem(item);
-	
-	TbItemDesc itemDesc=new  TbItemDesc();
-	//补全商品描述表中的商品ID
-	itemDesc.setItemId(itemId);
-	//补全商品描述表中创建时间
-	itemDesc.setCreated(date);
-	//补全商品描述表中更新时间
-	itemDesc.setUpdated(date);
-	tbItemMapper.addTbItemDesc(itemDesc);
-	//添加发送消息的业务逻辑
+		final long itemId=IDUtils.genItemId();
+		item.setId(itemId);
+		//补全状态
+		item.setStatus((byte) 1);
+		Date date = new Date();
+		//补全创建时间
+		item.setCreated(date);
+		//补全更新时间
+		item.setUpdated(date);
+		//添加商品基本信息
+		tbItemMapper.addTbItem(item);
+
+		TbItemDesc itemDesc=new  TbItemDesc();
+		//补全商品描述表中的商品ID
+		itemDesc.setItemId(itemId);
+		//补全商品描述表中创建时间
+		itemDesc.setCreated(date);
+		//补全商品描述表中更新时间
+		itemDesc.setUpdated(date);
+		tbItemMapper.addTbItemDesc(itemDesc);
+		//添加发送消息的业务逻辑
 
 jmsTemplate.send(topicDestination, new MessageCreator() {
 	@Override

@@ -15,6 +15,8 @@
         <module>../taotao-manager-web</module>
         <module>../taotao-content</module>
         <module>../taotao-item-web</module>
+        <module>../taotao-sso</module>
+        <module>../taotao-sso-web</module>
     </modules>
     <packaging>pom</packaging>
     <!-- 集中定义依赖版本号 -->

@@ -5,6 +5,7 @@ import java.util.List;
 import com.taotao.common.pojo.EasyUIDataGridResult;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.pojo.TbContent;
+import com.taotao.pojo.TbItemCat;
 
 public interface ContentService {
 	/**
@@ -31,4 +32,15 @@ TaotaoResult addContent(TbContent tbContent);
  * @return 返回指定分类下面的所有内容
  */
 List<TbContent> geTbContent(long categoryId);
+	/**
+
+	 * 根据id查询所有分类
+
+	 * @param parentId 分类id
+
+	 * @return 当前id的所有分类
+
+	 */
+
+	List<TbItemCat> getItemCatAll(long parentId);
 }

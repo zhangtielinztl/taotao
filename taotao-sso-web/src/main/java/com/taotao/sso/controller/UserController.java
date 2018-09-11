@@ -1,11 +1,14 @@
 package com.taotao.sso.controller;
 
 import com.taotao.commom.utils.CookieUtils;
+import com.taotao.commom.utils.JsonUtils;
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.pojo.TbUser;
 import com.taotao.sso.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,17 +42,22 @@ public class UserController {
     @ResponseBody
     public TaotaoResult login(String userName,String passWord,HttpServletRequest request,HttpServletResponse response){
         TaotaoResult result =userService.loginUser(userName,passWord);
-        System.out.println(result);
+
         //存入cookie 要把token存入浏览器
         String token = result.getData().toString();
         CookieUtils.setCookie(request,response,COOKIE_TOKEN_KEY,token);
         return  result;
     }
-    @RequestMapping(value ="/token/{token}",method = RequestMethod.GET)
+    @RequestMapping(value ="/token/{token}",produces= MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     @ResponseBody
-    public TaotaoResult getUserByToken(@PathVariable String token){
+    public String getUserByToken(@PathVariable String token, String callback){
         TaotaoResult result = userService.getUserByToken(token);
-        return  result;
+        if(StringUtils.isNotBlank(callback)){
+            String resultStr= callback + "("+ JsonUtils.objectToJson(result)+");";
+            System.out.println(resultStr);
+            return resultStr;
+        }
+        return  JsonUtils.objectToJson(result);
     }
 
     }

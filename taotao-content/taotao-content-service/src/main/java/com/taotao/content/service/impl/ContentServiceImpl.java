@@ -3,6 +3,8 @@ package com.taotao.content.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.taotao.mapper.TbItemCatMapper;
+import com.taotao.pojo.TbItemCat;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,8 @@ public class ContentServiceImpl implements ContentService {
 	private String CONTENT_KEY;
 @Autowired
 private TbContentMapper tbcontentMapper;
+@Autowired
+private TbItemCatMapper tbItemCatMapper;
 	@Override
 	public EasyUIDataGridResult findContentAll(long categoryId) {
 		List<TbContent> tbContentAll = tbcontentMapper.findTbContentAll(categoryId);
@@ -81,5 +85,16 @@ private TbContentMapper tbcontentMapper;
 		}
 		return result;
 	}
+	@Override
+
+	public List<TbItemCat> getItemCatAll(long parentId) {
+
+		List<TbItemCat> result = tbItemCatMapper.getItemCatByParentId(parentId);
+
+		return result;
+
+	}
+
+
 
 }
